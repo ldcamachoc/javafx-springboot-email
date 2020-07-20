@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="idMainPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lakesidess.controller.FileExcelController">
+	<children>
+		
+		<Label fx:id="idLabelExcelFile" layoutX="23.0" layoutY="37.0" text="Path File:" />		
+		<TextField fx:id="idInputFile" layoutX="89.0" layoutY="32.0" prefHeight="31.0" prefWidth="734.0" />
+		<Button fx:id="idButtonSelectFile" layoutX="839.0" layoutY="32.0" mnemonicParsing="false" onAction="#findPathFile" prefHeight="31.0" prefWidth="154.0" text="Selecciona Archivo..." />			
+		<TableView fx:id="idTable" layoutX="23.0" layoutY="174.0" prefHeight="500.0" prefWidth="970.0" />
+      <Button fx:id="idButtonLoadData" layoutX="335.0" layoutY="90.0" mnemonicParsing="false" onAction="#loadTable" prefHeight="51.0" prefWidth="355.0" text="Cargar Datos" />
+      <Button fx:id="idSendEmail" layoutX="335.0" layoutY="690.0" mnemonicParsing="false" onAction="#sendEmail" prefHeight="51.0" prefWidth="355.0" text="Enviar Correos" />
+	</children>
+</Pane>
