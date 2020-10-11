@@ -47,12 +47,17 @@ body {
 					</tr>
 					<tr>
 						<td>
-							<p style="padding: 0px 100px; text-align: justify;">Hi! Thank you for shopping
+							<p style="padding: 0px 10px; text-align: justify;">Hi! Thank you for shopping
 								with us! We Will deliver your order on <b>${dayDelivery}</b> between <b>${startHour} -	${endHour}</b><br/><br/> 
 								The invoice is attached for your review. Please note the total on the invoice.<br/><br/> 								
 								Please remember that there is a <b>$${chargePesos} pesos</b> charge if there is no one to receive your order.<br/><br/> 
 								We try very	hard to arrive during the specified time, but we can be a little early or late sometimes Thanks!!</p>
 						</td>
+					</tr>
+					<tr>						
+						<td><h2><b>In case that you have some problem to see the order on pdf click on the following link:</b></h2><br>
+						    <h2><a href="${urlOrder}">Here</a></h2>
+						</td>						
 					</tr>					
 				</table>
 			</td>
@@ -64,7 +69,7 @@ body {
 					<tr>
 						<td>
 							<h3 style="margin-top: 10px;">Stay in touch</h3>
-						</td>
+						</td>						
 					</tr>
 					<tr>
 						<td>

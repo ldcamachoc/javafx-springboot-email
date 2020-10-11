@@ -1,10 +1,12 @@
 package com.lakesidess.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -22,16 +24,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 
 import com.lakesidess.Constants;
 import com.lakesidess.vo.OrderVO;
@@ -87,6 +87,12 @@ public class EmailService {
 				message = sender.createMimeMessage();
 				multipart = new MimeMultipart("related");
 				
+				Long numberOrder = orderVO.getNumberOrder();
+				
+				if(StringUtils.isEmpty(orderVO.getEmail())){
+					log.info(String.format("Number of Order: %d  doesn't contains email", numberOrder));
+					continue;
+				}
 
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 				LocalDate dateDelivery = LocalDate.parse(orderVO.getDateDelivery(), formatter);
@@ -96,12 +102,15 @@ public class EmailService {
 				model.put("startHour", orderVO.getInitialTime());
 				model.put("endHour", orderVO.getEndingTime());
 
-				String year = String.valueOf(dateDelivery.getYear());
+				String year = String.valueOf(dateDelivery.getYear());				 
 
 				model.put("actualYear", year);
 				model.put("lakeSideEmail", env.getProperty("freemarker.email.template.property.lakeSideEmail"));
 				model.put("personToCall", env.getProperty("freemarker.email.template.property.personToCall"));
 				model.put("cellPhoneNumber", env.getProperty("freemarker.email.template.property.cellPhoneNumber"));				
+				
+				String urlOrder = encodeURLOrders(orderVO.getNumberOrder());
+				model.put("urlOrder", urlOrder);
 
 				// Set From: header field of the header.
 				String emailFrom = env.getProperty("spring.mail.username");
@@ -112,7 +121,7 @@ public class EmailService {
 				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(orderVO.getEmail()));
 
 				// Set Subject: header field
-				message.setSubject("Order Number " + orderVO.getNumberOrder());
+				message.setSubject("Order Number " + numberOrder);
 
 				// first part (the html)
 				MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -180,5 +189,18 @@ public class EmailService {
 	    attachmentPart.setDisposition(MimeBodyPart.ATTACHMENT);
 	    multipart.addBodyPart(attachmentPart);
 	}
-
+	
+	private String encodeURLOrders(Long numberOrder) throws UnsupportedEncodingException, MalformedURLException {
+		String   baseUrl = env.getProperty("freemarker.email.template.property.lakeSideURL.order");
+		StringBuilder pathBuilder = new StringBuilder()
+		.append(baseUrl)		
+		.append(URLEncoder.encode("orders?", "UTF-8"))
+		.append(URLEncoder.encode("keywords=", "UTF-8"))
+		.append(numberOrder)
+		.append(URLEncoder.encode("&offset=0", "UTF-8"));
+		
+		String urlFinal = new URL(pathBuilder.toString()).toString();		
+		
+		return urlFinal;
+	}
 }
